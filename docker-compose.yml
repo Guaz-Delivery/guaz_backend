@@ -1,17 +1,19 @@
 services:
   postgres:
     image: postgres:17-bookworm
-    container_name: guaz-db
+    container_name: guaz_db
     restart: always
     environment:
       POSTGRES_DB: ${PG_DB}
       POSTGRES_PASSWORD: ${PG_PASS}
       POSTGRES_USER: ${PG_USER}
       PGDATA: ${PG_DATA}
+    networks:
+      - guaz_delivery_network
 
   graphql-engine:
     image: hasura/graphql-engine:v2.42.0
-    container_name: guaz-graphql-engine
+    container_name: guaz_graphql_engine
     ports:
       - "8080:8080"
     restart: always
@@ -29,5 +31,21 @@ services:
       # HASURA_GRAPHQL_CONSOLE_ASSETS_DIR: /srv/console-assets
       ## uncomment next line to set an admin secret
       # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
+    networks:
+      - guaz_delivery_network
+
+  golang-webhooks:
+    container_name: golang_webhooks
+    ports:
+      - "9999:9999"
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - guaz_delivery_network
 volumes:
   db_data:
+
+networks:
+  guaz_delivery_network:
