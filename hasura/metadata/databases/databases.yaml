@@ -1,0 +1,14 @@
+- name: guaz_delivery
+  kind: postgres
+  configuration:
+    connection_info:
+      database_url:
+        connection_parameters:
+          database: guaz_delivery
+          host: postgres
+          password: mysecretpassword
+          port: 5432
+          username: guaz
+      isolation_level: read-committed
+      use_prepared_statements: false
+  tables: "!include guaz_delivery/tables/tables.yaml"
