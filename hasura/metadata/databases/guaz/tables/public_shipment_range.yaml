@@ -1,0 +1,3 @@
+table:
+  name: shipment_range
+  schema: public

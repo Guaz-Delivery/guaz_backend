@@ -1,0 +1,1 @@
+CREATE TABLE "public"."shipment_range" ("name" varchar NOT NULL, "starting_range" integer NOT NULL, "ending_range" integer NOT NULL, PRIMARY KEY ("name") , UNIQUE ("name"));COMMENT ON TABLE "public"."shipment_range" IS E'range category for shipment';
