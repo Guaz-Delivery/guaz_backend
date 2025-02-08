@@ -1,0 +1,2 @@
+CREATE TABLE "public"."sender" ("id" uuid NOT NULL DEFAULT gen_random_uuid(), "first_name" varchar NOT NULL, "middle_name" varchar NOT NULL, "last_name" varchar NOT NULL, "phone_number" Text NOT NULL, "email" text NOT NULL, PRIMARY KEY ("id") , UNIQUE ("id"), UNIQUE ("email"), UNIQUE ("phone_number"));COMMENT ON TABLE "public"."sender" IS E'table of sender ';
+CREATE EXTENSION IF NOT EXISTS pgcrypto;

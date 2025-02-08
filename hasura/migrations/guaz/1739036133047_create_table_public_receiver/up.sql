@@ -1,0 +1,2 @@
+CREATE TABLE "public"."receiver" ("id" uuid NOT NULL DEFAULT gen_random_uuid(), "first_name" varchar NOT NULL, "middle_name" varchar NOT NULL, "last_name" varchar NOT NULL, "phone_number" text NOT NULL, "email" text NOT NULL, PRIMARY KEY ("id") , UNIQUE ("id"), UNIQUE ("phone_number"), UNIQUE ("email"));COMMENT ON TABLE "public"."receiver" IS E'table for the receiver of the package';
+CREATE EXTENSION IF NOT EXISTS pgcrypto;

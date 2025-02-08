@@ -1,0 +1,2 @@
+CREATE TABLE "public"."KYC" ("id" uuid NOT NULL DEFAULT gen_random_uuid(), "courier_id" uuid NOT NULL, "left_side_picture" text NOT NULL, "right_side_picture" text NOT NULL, "front_side_picture" text NOT NULL, "id_picture" text NOT NULL, "id_number" text NOT NULL, PRIMARY KEY ("id") , FOREIGN KEY ("courier_id") REFERENCES "public"."couriers"("id") ON UPDATE no action ON DELETE no action, UNIQUE ("id"), UNIQUE ("id_number"));COMMENT ON TABLE "public"."KYC" IS E'tables for KYC verification';
+CREATE EXTENSION IF NOT EXISTS pgcrypto;

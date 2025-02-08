@@ -20,4 +20,4 @@ RUN go build -o guaz-hooks
 EXPOSE 9999
 
 # Starting the application 
-CMD ["/build/guaz-hooks"]
+CMD ["./guaz-hooks"]

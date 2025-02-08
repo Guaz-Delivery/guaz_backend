@@ -46,6 +46,5 @@ services:
       - guaz_delivery_network
 volumes:
   db_data:
-
 networks:
   guaz_delivery_network:

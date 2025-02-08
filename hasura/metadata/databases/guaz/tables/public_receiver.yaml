@@ -1,11 +1,11 @@
 table:
-  name: couriers
+  name: receiver
   schema: public
 array_relationships:
-  - name: KYCs
+  - name: receiver_OTPs
     using:
       foreign_key_constraint_on:
-        column: courier_id
+        column: receiver_id
         table:
-          name: KYC
+          name: receiver_OTP
           schema: public

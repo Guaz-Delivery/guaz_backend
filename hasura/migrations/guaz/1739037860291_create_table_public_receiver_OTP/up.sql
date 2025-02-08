@@ -1,0 +1,2 @@
+CREATE TABLE "public"."receiver_OTP" ("id" uuid NOT NULL DEFAULT gen_random_uuid(), "receiver_id" uuid NOT NULL, "value" text NOT NULL, "is_valid" boolean NOT NULL DEFAULT true, "created_at" timestamptz NOT NULL DEFAULT now(), "updated_at" timestamptz NOT NULL DEFAULT now(), PRIMARY KEY ("id") , FOREIGN KEY ("receiver_id") REFERENCES "public"."receiver"("id") ON UPDATE no action ON DELETE no action);COMMENT ON TABLE "public"."receiver_OTP" IS E'one time password for the receivers';
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
