@@ -22,3 +22,6 @@
   hasura console --envfile ../.env
   ```
 after this, you will have a working console (GraphQL Playground) on your browser and you can tweak your GraphQL queries there.
+
+
+## Remember to re-run the above commands whenever you see a change on the folder **/hasura** after new commit.  
