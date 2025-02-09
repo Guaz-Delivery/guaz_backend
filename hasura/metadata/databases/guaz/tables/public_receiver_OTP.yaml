@@ -1,7 +1,3 @@
 table:
   name: receiver_OTP
   schema: public
-object_relationships:
-  - name: receiver
-    using:
-      foreign_key_constraint_on: receiver_id

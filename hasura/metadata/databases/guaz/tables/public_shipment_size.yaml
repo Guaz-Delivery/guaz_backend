@@ -1,11 +1,3 @@
 table:
   name: shipment_size
   schema: public
-array_relationships:
-  - name: deliveries
-    using:
-      foreign_key_constraint_on:
-        column: size
-        table:
-          name: delivery
-          schema: public
