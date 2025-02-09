@@ -1,3 +1,7 @@
 table:
   name: sender_OTP
   schema: public
+object_relationships:
+  - name: sender
+    using:
+      foreign_key_constraint_on: sender_id

@@ -1,3 +1,7 @@
 table:
   name: KYC
   schema: public
+object_relationships:
+  - name: courier
+    using:
+      foreign_key_constraint_on: courier_id

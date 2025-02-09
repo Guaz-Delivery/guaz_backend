@@ -1,3 +1,11 @@
 table:
   name: couriers
   schema: public
+array_relationships:
+  - name: KYCs
+    using:
+      foreign_key_constraint_on:
+        column: courier_id
+        table:
+          name: KYC
+          schema: public

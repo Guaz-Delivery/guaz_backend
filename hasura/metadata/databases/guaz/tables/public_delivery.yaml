@@ -1,3 +1,10 @@
 table:
   name: delivery
   schema: public
+object_relationships:
+  - name: delivery_status
+    using:
+      foreign_key_constraint_on: status
+  - name: shipment_size
+    using:
+      foreign_key_constraint_on: size
