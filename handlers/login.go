@@ -5,12 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"log"
 	"net/http"
 	"os"
 
 	"github.com/Guaz-Delivery/guaz_backend/models"
 	"github.com/Guaz-Delivery/guaz_backend/queries"
+	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func HandleCourierLogin(w http.ResponseWriter, r *http.Request) {
@@ -38,6 +39,7 @@ func HandleCourierLogin(w http.ResponseWriter, r *http.Request) {
 
 	// throw if an error happens
 	if err != nil {
+
 		errorBody, err := json.Marshal(result)
 		if err != nil {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -57,7 +59,6 @@ func HandleCourierLogin(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-// Auto-generated function that takes the Action parameters and must return it's response type
 func LOGIN_COURIER(args models.LOGIN_COURIERArgs, secret string) (response models.Login_Output, err error) {
 	// fectch the user data
 	variables := map[string]interface{}{
@@ -83,28 +84,67 @@ func LOGIN_COURIER(args models.LOGIN_COURIERArgs, secret string) (response model
 	resByte, err := io.ReadAll(res.Body)
 
 	if err != nil {
-		return models.Login_Output{}, errors.New("unable to parse the response")
+		return models.Login_Output{
+			Token:      "",
+			Error:      true,
+			Message:    "unable to parse the response",
+			Courier_id: "",
+		}, errors.New("unable to parse the response")
 	}
 
 	checkRes := models.Response{}
 	err = json.Unmarshal(resByte, &checkRes)
 
 	if err != nil {
-		return models.Login_Output{}, errors.New("unable to parse the response bytes")
+		return models.Login_Output{
+			Token:      "",
+			Error:      true,
+			Message:    err.Error(),
+			Courier_id: "",
+		}, errors.New("unable to parse the response bytes")
 	}
 
-	log.Printf("resbytes %s ", checkRes.Data.Couriers[0])
 	// compare the password from stored hash
+	err = bcrypt.CompareHashAndPassword([]byte(checkRes.Data.Couriers[0].Password), []byte(args.Args.Password))
+	if err != nil {
+		return models.Login_Output{
+			Token:      "",
+			Error:      true,
+			Message:    "account doesn't exist or Password is not correct",
+			Courier_id: "",
+		}, errors.New("account doesn't exist or Password is not correct")
+	}
 
 	// generate token
+	t := jwt.NewWithClaims(jwt.SigningMethodHS256,
+		jwt.MapClaims{
+			"iss": "guaz-webhooks",
+			"sub": checkRes.Data.Couriers[0].Id,
+			"https://hasura.io/jwt/claims": map[string]interface{}{
+				"x-hasura-default-role":  "courier",
+				"x-hasura-allowed-roles": []string{"courier"},
+				"x-hasura-user-id":       checkRes.Data.Couriers[0].Id,
+			},
+		})
+	s, err := t.SignedString([]byte(os.Getenv("JWT_PRIVATE_KEY")))
+	if err != nil {
+
+		return models.Login_Output{
+			Token:      "",
+			Error:      true,
+			Message:    err.Error(),
+			Courier_id: "",
+		}, err
+	}
 
 	// return with the token
 	message := "succssful"
 	response = models.Login_Output{
-		Token:      "<sample value>",
-		Courier_id: "<sample value>",
+		Token:      s,
+		Courier_id: checkRes.Data.Couriers[0].Id,
 		Error:      false,
-		Message:    &message,
+		Message:    message,
 	}
+
 	return response, nil
 }
