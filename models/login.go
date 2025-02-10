@@ -7,10 +7,10 @@ type Login_Input struct {
 }
 
 type Login_Output struct {
-	Token      string  `json:"token"`
-	Courier_id string  `json:"courier_id"`
-	Error      bool    `json:"error"`
-	Message    *string `json:"message"`
+	Token      string `json:"token"`
+	Courier_id string `json:"courier_id"`
+	Error      bool   `json:"error"`
+	Message    string `json:"message"`
 }
 
 type LOGIN_COURIERArgs struct {

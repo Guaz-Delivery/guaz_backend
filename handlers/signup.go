@@ -65,7 +65,7 @@ func SIGNUP_COURIER(args models.SIGNUP_COURIERArgs, secret string) (response mod
 		"location":     args.Args.Location,
 		"phone_number": args.Args.Phone_number,
 		"rate":         args.Args.Rate,
-		"password":     hashedPassword,
+		"password":     string(hashedPassword),
 	}
 	reqBody := models.GraphQLRequest{
 		Query:     queries.SIGNUP_COURIER,
