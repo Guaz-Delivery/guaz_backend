@@ -68,7 +68,7 @@ func SIGNUP_COURIER(args models.SIGNUP_COURIERArgs, secret string) (response mod
 		"password":     hashedPassword,
 	}
 	reqBody := models.GraphQLRequest{
-		Query:     queries.SIGNUP_COURIERS,
+		Query:     queries.SIGNUP_COURIER,
 		Variables: variables,
 	}
 	reqBytes, err := json.Marshal(reqBody)
@@ -91,7 +91,7 @@ func SIGNUP_COURIER(args models.SIGNUP_COURIERArgs, secret string) (response mod
 		return models.Signup_Output{}, err
 	}
 
-	regRes := models.RegisterResponse{}
+	regRes := models.Response{}
 
 	err = json.Unmarshal(resByte, &regRes)
 

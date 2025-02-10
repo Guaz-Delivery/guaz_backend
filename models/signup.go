@@ -23,17 +23,8 @@ type Signup_Output struct {
 	Message    *string `json:"message"`
 }
 
-type Mutation struct {
-	SIGNUP_COURIER *Signup_Output `json:"signup_output"`
-}
-
 type SIGNUP_COURIERArgs struct {
 	Args Signup_Input `json:"args"`
-}
-
-type GraphQLRequest struct {
-	Query     string                 `json:"query"`
-	Variables map[string]interface{} `json:"variables"`
 }
 
 type RegisterResponseBody struct {
@@ -48,22 +39,4 @@ type RegisterResponseBody struct {
 	Phone_Number string `json:"phone_number"`
 	Rate         int    `json:"rate"`
 	Updated_at   string `json:"updated_at"`
-}
-
-type RegisterGraphQLData struct {
-	Insert_Couriers_One RegisterResponseBody `json:"insert_couriers_one"`
-}
-
-type RegisterResponse struct {
-	Data   RegisterGraphQLData `json:"data,omitempty"`
-	Errors []GraphQLError      `json:"errors,omitempty"`
-}
-
-type GraphQLError struct {
-	Message string `json:"message"`
-}
-
-type Point struct {
-	Y float64 `json:"y"` // latitude
-	X float64 `json:"x"` // longitude
 }
