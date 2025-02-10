@@ -1,10 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
+	handlers "github.com/Guaz-Delivery/guaz_backend/handlers"
+	mux "github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
 
@@ -13,11 +14,9 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	fmt.Println("Hello world")
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "hello world!\n")
-		log.Println("hello World")
-	})
-	http.ListenAndServe(":9999", nil)
+
+	r := mux.NewRouter()
+	r.HandleFunc("/signup_courier/", handlers.HandleCourierSignup)
+	http.ListenAndServe(":9999", r)
 
 }
