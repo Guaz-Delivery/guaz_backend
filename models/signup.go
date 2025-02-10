@@ -48,19 +48,6 @@ type RegisterResponseBody struct {
 	Phone_Number string `json:"phone_number"`
 	Rate         int    `json:"rate"`
 	Updated_at   string `json:"updated_at"`
-	/*
-			"created_at": "2025-02-10T13:56:30.546974+00:00",
-		      "email": "test3",
-		      "first_name": "test",
-		      "id": "9028843b-1e15-431f-a734-3d8e0e03d53f",
-		      "is_verified": false,
-		      "last_name": "test",
-		      "location": "(80,80)",
-		      "middle_name": "test",
-		      "phone_number": "3test",
-		      "rate": 2,
-		      "updated_at": "2025-02-10T13:56:30.546974+00:00"
-	*/
 }
 
 type RegisterGraphQLData struct {

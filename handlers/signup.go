@@ -3,7 +3,6 @@ package handlers
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 
@@ -13,6 +12,7 @@ import (
 
 	"github.com/Guaz-Delivery/guaz_backend/models"
 	"github.com/Guaz-Delivery/guaz_backend/queries"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func HandleCourierSignup(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +50,6 @@ func HandleCourierSignup(w http.ResponseWriter, r *http.Request) {
 }
 
 func SIGNUP_COURIER(args models.SIGNUP_COURIERArgs, secret string) (response models.Signup_Output, err error) {
-	fmt.Print("args", args.Args)
 	// Hash the password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(args.Args.Password), 10)
 	if err != nil {
@@ -86,10 +85,12 @@ func SIGNUP_COURIER(args models.SIGNUP_COURIERArgs, secret string) (response mod
 	if err != nil {
 		return models.Signup_Output{}, err
 	}
+
 	resByte, err := io.ReadAll(res.Body)
 	if err != nil {
 		return models.Signup_Output{}, err
 	}
+
 	regRes := models.RegisterResponse{}
 
 	err = json.Unmarshal(resByte, &regRes)
@@ -97,13 +98,29 @@ func SIGNUP_COURIER(args models.SIGNUP_COURIERArgs, secret string) (response mod
 	if err != nil {
 		return models.Signup_Output{}, err
 	}
+	// generate token
+	t := jwt.NewWithClaims(jwt.SigningMethodHS256,
+		jwt.MapClaims{
+			"iss": "guaz-webhooks",
+			"sub": regRes.Data.Insert_Couriers_One.Id,
+			"https://hasura.io/jwt/claims": map[string]interface{}{
+				"x-hasura-default-role":  "courier",
+				"x-hasura-allowed-roles": []string{"courier"},
+				"x-hasura-user-id":       regRes.Data.Insert_Couriers_One.Id,
+			},
+		})
+	s, err := t.SignedString([]byte(os.Getenv("JWT_PRIVATE_KEY")))
 
-	fmt.Println(regRes)
+	if err != nil {
+		return models.Signup_Output{}, err
+	}
 
+	message := "sucessful"
 	response = models.Signup_Output{
-		Token:      "<sample value>",
-		Courier_id: "<sample value>",
+		Token:      s,
+		Courier_id: regRes.Data.Insert_Couriers_One.Id,
 		Error:      false,
+		Message:    &message,
 	}
 	return response, nil
 }
