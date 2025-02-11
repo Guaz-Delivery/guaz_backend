@@ -1,11 +1,11 @@
 package models
 
-type SignupCourierActionPayload struct {
+type Signup_Courier_ActionPayload struct {
 	SessionVariables map[string]interface{} `json:"session_variables"`
 	Input            SIGNUP_COURIERArgs     `json:"input"`
 }
 
-type Signup_Input struct {
+type Signup_Courier_Input struct {
 	First_name   string `json:"first_name"`
 	Middle_name  string `json:"middle_name"`
 	Last_name    string `json:"last_name"`
@@ -16,7 +16,7 @@ type Signup_Input struct {
 	Email        string `json:"email"`
 }
 
-type Signup_Output struct {
+type Signup_Courier_Output struct {
 	Token      string  `json:"token"`
 	Courier_id string  `json:"courier_id"`
 	Error      bool    `json:"error"`
@@ -24,7 +24,7 @@ type Signup_Output struct {
 }
 
 type SIGNUP_COURIERArgs struct {
-	Args Signup_Input `json:"args"`
+	Args Signup_Courier_Input `json:"args"`
 }
 
 type RegisterResponseBody struct {

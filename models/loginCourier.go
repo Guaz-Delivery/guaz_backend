@@ -1,12 +1,12 @@
 package models
 
-type Login_Input struct {
+type Login_Courier_Input struct {
 	Password     string  `json:"password"`
 	Phone_Number *string `json:"phone_number"`
 	Email        *string `json:"email"`
 }
 
-type Login_Output struct {
+type Login_Courier_Output struct {
 	Token      string `json:"token"`
 	Courier_id string `json:"courier_id"`
 	Error      bool   `json:"error"`
@@ -14,7 +14,7 @@ type Login_Output struct {
 }
 
 type LOGIN_COURIERArgs struct {
-	Args Login_Input `json:"args"`
+	Args Login_Courier_Input `json:"args"`
 }
 
 type LoginCourierActionPayload struct {

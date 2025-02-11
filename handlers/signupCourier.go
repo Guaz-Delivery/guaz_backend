@@ -27,7 +27,7 @@ func HandleCourierSignup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// parse the body as action payload
-	var actionPayload models.SignupCourierActionPayload
+	var actionPayload models.Signup_Courier_ActionPayload
 	err = json.Unmarshal(reqBody, &actionPayload)
 	if err != nil {
 		responseWithError(w, http.StatusBadRequest, "invalid payload")
@@ -49,11 +49,11 @@ func HandleCourierSignup(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func SIGNUP_COURIER(args models.SIGNUP_COURIERArgs, secret string) (response models.Signup_Output, err error) {
+func SIGNUP_COURIER(args models.SIGNUP_COURIERArgs, secret string) (response models.Signup_Courier_Output, err error) {
 	// Hash the password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(args.Args.Password), 10)
 	if err != nil {
-		return models.Signup_Output{}, err
+		return models.Signup_Courier_Output{}, err
 	}
 
 	//  prepare the request
@@ -83,12 +83,12 @@ func SIGNUP_COURIER(args models.SIGNUP_COURIERArgs, secret string) (response mod
 	res, err := http.DefaultClient.Do(req)
 
 	if err != nil {
-		return models.Signup_Output{}, err
+		return models.Signup_Courier_Output{}, err
 	}
 
 	resByte, err := io.ReadAll(res.Body)
 	if err != nil {
-		return models.Signup_Output{}, err
+		return models.Signup_Courier_Output{}, err
 	}
 
 	regRes := models.Response{}
@@ -96,7 +96,7 @@ func SIGNUP_COURIER(args models.SIGNUP_COURIERArgs, secret string) (response mod
 	err = json.Unmarshal(resByte, &regRes)
 
 	if err != nil {
-		return models.Signup_Output{}, err
+		return models.Signup_Courier_Output{}, err
 	}
 	// generate token
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256,
@@ -112,11 +112,11 @@ func SIGNUP_COURIER(args models.SIGNUP_COURIERArgs, secret string) (response mod
 	s, err := t.SignedString([]byte(os.Getenv("JWT_PRIVATE_KEY")))
 
 	if err != nil {
-		return models.Signup_Output{}, err
+		return models.Signup_Courier_Output{}, err
 	}
 
 	message := "sucessful"
-	response = models.Signup_Output{
+	response = models.Signup_Courier_Output{
 		Token:      s,
 		Courier_id: regRes.Data.Insert_Couriers_One.Id,
 		Error:      false,
@@ -126,7 +126,7 @@ func SIGNUP_COURIER(args models.SIGNUP_COURIERArgs, secret string) (response mod
 }
 
 func responseWithError(w http.ResponseWriter, status int, message string) {
-	errorResponse := models.Signup_Output{
+	errorResponse := models.Signup_Courier_Output{
 		Token:      "",
 		Courier_id: "",
 		Error:      true,

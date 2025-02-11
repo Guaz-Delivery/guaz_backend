@@ -59,7 +59,7 @@ func HandleCourierLogin(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-func LOGIN_COURIER(args models.LOGIN_COURIERArgs, secret string) (response models.Login_Output, err error) {
+func LOGIN_COURIER(args models.LOGIN_COURIERArgs, secret string) (response models.Login_Courier_Output, err error) {
 	// fectch the user data
 	variables := map[string]interface{}{
 		"email":        args.Args.Email,
@@ -79,12 +79,12 @@ func LOGIN_COURIER(args models.LOGIN_COURIERArgs, secret string) (response model
 	req.Header.Set("x-hasura-admin-secret", secret)
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return models.Login_Output{}, err
+		return models.Login_Courier_Output{}, err
 	}
 	resByte, err := io.ReadAll(res.Body)
 
 	if err != nil {
-		return models.Login_Output{
+		return models.Login_Courier_Output{
 			Token:      "",
 			Error:      true,
 			Message:    "unable to parse the response",
@@ -96,7 +96,7 @@ func LOGIN_COURIER(args models.LOGIN_COURIERArgs, secret string) (response model
 	err = json.Unmarshal(resByte, &checkRes)
 
 	if err != nil {
-		return models.Login_Output{
+		return models.Login_Courier_Output{
 			Token:      "",
 			Error:      true,
 			Message:    err.Error(),
@@ -107,7 +107,7 @@ func LOGIN_COURIER(args models.LOGIN_COURIERArgs, secret string) (response model
 	// compare the password from stored hash
 	err = bcrypt.CompareHashAndPassword([]byte(checkRes.Data.Couriers[0].Password), []byte(args.Args.Password))
 	if err != nil {
-		return models.Login_Output{
+		return models.Login_Courier_Output{
 			Token:      "",
 			Error:      true,
 			Message:    "account doesn't exist or Password is not correct",
@@ -129,7 +129,7 @@ func LOGIN_COURIER(args models.LOGIN_COURIERArgs, secret string) (response model
 	s, err := t.SignedString([]byte(os.Getenv("JWT_PRIVATE_KEY")))
 	if err != nil {
 
-		return models.Login_Output{
+		return models.Login_Courier_Output{
 			Token:      "",
 			Error:      true,
 			Message:    err.Error(),
@@ -139,7 +139,7 @@ func LOGIN_COURIER(args models.LOGIN_COURIERArgs, secret string) (response model
 
 	// return with the token
 	message := "succssful"
-	response = models.Login_Output{
+	response = models.Login_Courier_Output{
 		Token:      s,
 		Courier_id: checkRes.Data.Couriers[0].Id,
 		Error:      false,

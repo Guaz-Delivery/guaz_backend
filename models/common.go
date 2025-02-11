@@ -3,6 +3,8 @@ package models
 type Mutation struct {
 	LOGIN_COURIER  *Login_Output
 	SIGNUP_COURIER *Signup_Output
+	LOGIN_COURIER  *Login_Courier_Output
+	SIGNUP_COURIER *Signup_Courier_Output
 }
 
 type GraphQLRequest struct {
