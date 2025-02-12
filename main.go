@@ -18,6 +18,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/signup_courier/", handlers.HandleCourierSignup)
 	r.HandleFunc("/login_courier/", handlers.HandleCourierLogin)
+	r.HandleFunc("/login_admin/", handlers.HandleAdminLogin)
 	http.ListenAndServe(":9999", r)
 
 }

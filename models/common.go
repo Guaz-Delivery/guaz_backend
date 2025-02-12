@@ -1,7 +1,7 @@
 package models
 
 type Mutation struct {
-	LOGIN_ADMIN    *Login_Admin_Output
+	LOGIN_ADMIN    *Admin_Output
 	LOGIN_COURIER  *Courier_Output
 	SIGNUP_COURIER *Courier_Output
 }
