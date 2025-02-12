@@ -6,13 +6,6 @@ type Login_Courier_Input struct {
 	Email        *string `json:"email"`
 }
 
-type Login_Courier_Output struct {
-	Token      string `json:"token"`
-	Courier_id string `json:"courier_id"`
-	Error      bool   `json:"error"`
-	Message    string `json:"message"`
-}
-
 type LOGIN_COURIERArgs struct {
 	Args Login_Courier_Input `json:"args"`
 }
