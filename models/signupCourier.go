@@ -6,21 +6,17 @@ type Signup_Courier_ActionPayload struct {
 }
 
 type Signup_Courier_Input struct {
-	First_name   string `json:"first_name"`
-	Middle_name  string `json:"middle_name"`
-	Last_name    string `json:"last_name"`
-	Password     string `json:"password"`
-	Location     string `json:"location"`
-	Rate         int    `json:"rate"`
-	Phone_number string `json:"phone_number"`
-	Email        string `json:"email"`
-}
-
-type Signup_Courier_Output struct {
-	Token      string  `json:"token"`
-	Courier_id string  `json:"courier_id"`
-	Error      bool    `json:"error"`
-	Message    *string `json:"message"`
+	First_name      string `json:"first_name"`
+	Middle_name     string `json:"middle_name"`
+	Last_name       string `json:"last_name"`
+	Password        string `json:"password"`
+	Location        string `json:"location"`
+	Rate            int    `json:"rate"`
+	Phone_number    string `json:"phone_number"`
+	Email           string `json:"email"`
+	Profile_picture string `json:"profile_picture"`
+	Shipment_range  string `json:"shipment_range"`
+	Shipment_size   string `json:"shipment_size"`
 }
 
 type SIGNUP_COURIERArgs struct {

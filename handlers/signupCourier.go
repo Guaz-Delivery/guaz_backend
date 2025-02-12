@@ -1,14 +1,10 @@
 package handlers
 
 import (
-	"bytes"
 	"encoding/json"
-	"io"
+	"errors"
 	"log"
 	"net/http"
-	"os"
-
-	"golang.org/x/crypto/bcrypt"
 
 	"github.com/Guaz-Delivery/guaz_backend/helpers"
 	"github.com/Guaz-Delivery/guaz_backend/models"
@@ -20,15 +16,15 @@ func HandleCourierSignup(w http.ResponseWriter, r *http.Request) {
 
 	// Parse request body
 	var actionPayload models.Signup_Courier_ActionPayload
-	if err := parseRequestBody(r.Body, &actionPayload); err != nil {
-		responseWithError(w, http.StatusBadRequest, "Invalid request body")
+	if err := helpers.ParseRequestBody(r.Body, &actionPayload); err != nil {
+		helpers.CourierResponseWithError(w, "Invalid request body")
 		return
 	}
 
 	// Process signup
-	result, err := SIGNUP_COURIER(actionPayload.Input, r.Header.Get("x-hasura-admin-secret"))
+	result, err := signupCourier(actionPayload.Input, r.Header.Get("x-hasura-admin-secret"))
 	if err != nil {
-		responseWithError(w, http.StatusBadRequest, err.Error())
+		helpers.CourierResponseWithError(w, err.Error())
 		return
 	}
 
@@ -38,11 +34,11 @@ func HandleCourierSignup(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func SIGNUP_COURIER(args models.SIGNUP_COURIERArgs, secret string) (models.Signup_Courier_Output, error) {
+func signupCourier(args models.SIGNUP_COURIERArgs, secret string) (interface{}, error) {
 	// Hash password
-	hashedPassword, err := hashPassword(args.Args.Password)
+	hashedPassword, err := helpers.HashPassword(args.Args.Password)
 	if err != nil {
-		return models.Signup_Courier_Output{}, err
+		return nil, err
 	}
 
 	// Prepare GraphQL variables
@@ -62,80 +58,25 @@ func SIGNUP_COURIER(args models.SIGNUP_COURIERArgs, secret string) (models.Signu
 
 	// Send GraphQL request
 	var regRes models.Response
-	if err := sendGraphQLRequest(queries.SIGNUP_COURIER, variables, secret, &regRes); err != nil {
-		return models.Signup_Courier_Output{}, err
+	if err := helpers.SendGraphQLRequest(queries.SIGNUP_COURIER, variables, secret, &regRes); err != nil {
+		return nil, err
+	}
+	if regRes.Errors != nil {
+		log.Printf("signup: %s", regRes.Errors[0].Message)
+		return nil, errors.New("already registered!")
 	}
 
 	// Generate JWT token
 	token, err := helpers.GenerateJWTToken(regRes.Data.Insert_Couriers_One.Id, []string{"courier"})
 	if err != nil {
-		return models.Signup_Courier_Output{}, err
+		return nil, err
 	}
 
 	// Return success response
-	message := "Successful"
-	return models.Signup_Courier_Output{
+	return models.Courier_Output{
 		Token:      token,
 		Courier_id: regRes.Data.Insert_Couriers_One.Id,
 		Error:      false,
-		Message:    &message,
+		Message:    "successful",
 	}, nil
-}
-
-// Helper function to parse request body
-func parseRequestBody(body io.ReadCloser, dest interface{}) error {
-	defer body.Close()
-	data, err := io.ReadAll(body)
-	if err != nil {
-		return err
-	}
-	return json.Unmarshal(data, dest)
-}
-
-// Helper function to hash password
-func hashPassword(password string) (string, error) {
-	hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	return string(hashed), err
-}
-
-// Helper function to send GraphQL request
-func sendGraphQLRequest(query string, variables map[string]interface{}, secret string, response interface{}) error {
-	reqBody, err := json.Marshal(models.GraphQLRequest{Query: query, Variables: variables})
-	if err != nil {
-		return err
-	}
-
-	req, err := http.NewRequest(http.MethodPost, os.Getenv("GRAPHQL_URL"), bytes.NewReader(reqBody))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("x-hasura-admin-secret", secret)
-
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
-	}
-	defer res.Body.Close()
-
-	resByte, err := io.ReadAll(res.Body)
-	if err != nil {
-		return err
-	}
-
-	log.Printf("Signup response: %s", resByte)
-	return json.Unmarshal(resByte, response)
-}
-
-// Helper function to generate JWT token
-
-// Helper function to respond with error message
-func responseWithError(w http.ResponseWriter, status int, message string) {
-	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(models.Signup_Courier_Output{
-		Token:      "",
-		Courier_id: "",
-		Error:      true,
-		Message:    &message,
-	})
 }
