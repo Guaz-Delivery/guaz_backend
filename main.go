@@ -16,9 +16,10 @@ func main() {
 	}
 
 	r := mux.NewRouter()
-	r.HandleFunc("/signup_courier/", handlers.HandleCourierSignup)
-	r.HandleFunc("/login_courier/", handlers.HandleCourierLogin)
-	r.HandleFunc("/login_admin/", handlers.HandleAdminLogin)
+	r.HandleFunc("/signup_courier/", handlers.HandleCourierSignup).Methods(http.MethodPost)
+	r.HandleFunc("/login_courier/", handlers.HandleCourierLogin).Methods(http.MethodPost)
+	r.HandleFunc("/login_admin/", handlers.HandleAdminLogin).Methods(http.MethodPost)
+	r.HandleFunc("/upload/", handlers.HandleUpload).Methods(http.MethodPost)
 	http.ListenAndServe(":9999", r)
 
 }

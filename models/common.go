@@ -4,6 +4,7 @@ type Mutation struct {
 	LOGIN_ADMIN    *Admin_Output
 	LOGIN_COURIER  *Courier_Output
 	SIGNUP_COURIER *Courier_Output
+	UPLOAD         *[]Upload_output
 }
 
 type GraphQLRequest struct {
