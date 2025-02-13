@@ -3,11 +3,12 @@ package helpers
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/Guaz-Delivery/guaz_backend/models"
 	"io"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/Guaz-Delivery/guaz_backend/models"
 )
 
 // Helper function to send GraphQL request
