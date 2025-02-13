@@ -18,8 +18,6 @@ func HandleUpload(w http.ResponseWriter, r *http.Request) {
 	// set the response header as JSON
 	w.Header().Set("Content-Type", "application/json")
 
-	// read request body
-
 	// parse the body as action payload
 	var actionPayload models.UploadActionPayload
 	if err := helpers.ParseRequestBody(r.Body, &actionPayload); err != nil {
@@ -39,7 +37,7 @@ func HandleUpload(w http.ResponseWriter, r *http.Request) {
 
 func saveImageToFile(input models.UPLOADArgs) []models.Upload_output {
 
-	var image []models.Upload_output
+	var image []models.Upload_output = make([]models.Upload_output, len(input.Arg))
 	for i, img := range input.Arg {
 		// create a decoder with the base64 string from request
 		dec, err := base64.StdEncoding.DecodeString(string(img.Base64))
@@ -74,13 +72,17 @@ func saveImageToFile(input models.UPLOADArgs) []models.Upload_output {
 		}
 		//  save the file
 		if err := file.Sync(); err != nil {
-
 			log.Println("unable to save the file")
 			image[i].Error = true
 			continue
 		}
+		if os.Getenv("DEBUG") != "" {
+			image[i].Image_url = fmt.Sprintf(os.Getenv("TESTING_HOST_URL"), img.File_name)
 
-		image[i].Image_url = fmt.Sprintf(os.Getenv("HOST_URL"), img.File_name)
+		} else {
+			image[i].Image_url = fmt.Sprintf(os.Getenv("HOST_URL"), img.File_name)
+		}
+
 	}
 
 	return image
