@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"math"
-	"math/rand"
 	"net/http"
 	"os"
 
@@ -15,7 +13,7 @@ import (
 	"github.com/Guaz-Delivery/guaz_backend/models"
 )
 
-func HandlePayment(w http.ResponseWriter, r *http.Request) {
+func HandleCreditPayment(w http.ResponseWriter, r *http.Request) {
 
 	// set the response header as JSON
 	w.Header().Set("Content-Type", "application/json")
@@ -39,8 +37,6 @@ func HandlePayment(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(result); err != nil {
 		http.Error(w, "Unable to send response", http.StatusInternalServerError)
 	}
-
-	// throw if an error happens
 
 }
 
@@ -69,15 +65,6 @@ func creditPayment(args models.CREDIT_PAYMENTArgs) (response interface{}, err er
 		Status:       res.Status,
 	}
 	return response, nil
-}
-
-func randomString(length int) string {
-	var chars []byte = []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.")
-	var result []byte
-	for range length {
-		result = append(result, chars[int(math.Floor(rand.Float64()*float64(len(chars))))])
-	}
-	return string(result)
 }
 
 func sendHttpRequest(method string, url string, payload models.Payment, response interface{}) error {

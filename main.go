@@ -20,7 +20,8 @@ func main() {
 	r.HandleFunc("/login_courier/", handlers.HandleCourierLogin).Methods(http.MethodPost)
 	r.HandleFunc("/login_admin/", handlers.HandleAdminLogin).Methods(http.MethodPost)
 	r.HandleFunc("/upload/", handlers.HandleUpload).Methods(http.MethodPost)
-	r.HandleFunc("/payment/", handlers.HandlePayment).Methods(http.MethodPost)
+	r.HandleFunc("/creditpayment/", handlers.HandleCreditPayment).Methods(http.MethodPost)
+	r.HandleFunc("/verifypayment/", handlers.HandleVerifyPayment).Methods(http.MethodGet)
 	http.ListenAndServe(":9999", r)
 
 }

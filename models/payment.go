@@ -19,6 +19,12 @@ type ChapaResponse struct {
 		Checkout_URL string `json:"checkout_url"`
 	} `json:"data"`
 }
+
+type ChapaVerifyResponse struct {
+	Message string                 `json:"message"`
+	Status  string                 `json:"status"`
+	Data    map[string]interface{} `json:"data"`
+}
 type PaymentActionPayload struct {
 	SessionVariables map[string]interface{} `json:"session_variables"`
 	Input            CREDIT_PAYMENTArgs     `json:"input"`
@@ -40,4 +46,10 @@ type Credit_Input struct {
 type Credit_Output struct {
 	Checkout_url string `json:"checkout_url"`
 	Status       string `json:"status"`
+}
+
+type VerifyPaymentPayload struct {
+	Trx_Ref string `json:"trx_ref"`
+	Ref_Id  string `json:"ref_id"`
+	Status  string `json:"status"`
 }
